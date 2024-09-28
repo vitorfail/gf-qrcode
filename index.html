@@ -19,20 +19,22 @@
                     Nenhum arquivo
                 </label>
                 <input type="file" id="fileInput" accept=".png" />
-            </div>
+            </div> 
             <input id="fileInput" accept=".png" type="file"/>
             <button id="generateBtn" onclick="transformarParaVermelho()">Gerar</button>
         </div>
         <div class="result">
-            <div id="caixas_rotatorias" class="caixas_rotatorias">
+            <div id="qrcode" class="qrcode">
                 <div class="loader6"></div>
+                <p id="aviso">Coloque o texto ou link!!</p>
             </div>
-            <div id="qrcode" ></div>
+            <button onclick="downloadImage()">Salvar</button>
         </div>    
     </div>
     <script>
         var cor = document.getElementById('cor').value;
         let arquivoSelecionado = null;
+        var url_image="" 
         const QRCode = require('qrcode');
         const Jimp = require('jimp');
         function hexToRgb() {
@@ -69,7 +71,18 @@
         }
 
         async function transformarParaVermelho() {
-            try {
+            var texto = document.getElementById("inputText")
+            if (texto.value==null || texto.value == ""){
+                var aviso = document.getElementById("aviso")
+                aviso.style.display ="flex"
+            }
+            else{
+                try {
+                var aviso = document.getElementById("aviso")
+                aviso.style.display ="none"
+                const qrcodeDiv = document.getElementById('qrcode');
+                qrcodeDiv.className ="show"
+                qrcodeDiv.style = "background:none;"
                 // Carrega a imagem
                 const qrCodeImg = await gerar_qr();
                 if(arquivoSelecionado == null){
@@ -109,17 +122,17 @@
                     qrCodeImg.composite(fundoBranco, posX, posY);
                     const dataUrl = await qrCodeImg.getBase64Async(Jimp.MIME_PNG);
                     // Salva a nova imagem
-                    const img = document.createElement('img');
-                    img.src = dataUrl;
-                    img.alt = 'QR Code';
-                    const qrcodeDiv = document.getElementById('qrcode');
-                    qrcodeDiv.innerHTML = ''; // Limpa QR Code anterior
-                    qrcodeDiv.appendChild(img);
+                    qrcodeDiv.className ="show"
+                    setTimeout(function(){qrcodeDiv.className ="qrcode"}, 1000)
+                    url_image =dataUrl
+                    setTimeout(function(){ qrcodeDiv.style = `background: url(${dataUrl}); background-repeat: no-repeat; background-size:cover; background-position:center;`},1000) // Limpa QR Code anterior
 
                     console.log('Imagem processada e salva com sucesso!');
                 }
-            } catch (error) {
-                console.error('Erro ao processar a imagem:', error);
+                } catch (error) {
+                    console.error('Erro ao processar a imagem:', error);
+                }
+
             }
         }
 
@@ -143,6 +156,14 @@
                 fileInfoDisplay.textContent = 'Nenhuma imagem selecionada.';
             }        
         });
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.href = url_image;
+            link.download = "qr.jpg"; // Força a abertura da janela de escolha de local
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
     </script>
 </body>
