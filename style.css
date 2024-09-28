@@ -1,0 +1,212 @@
+:root{
+    --delay:0.7s;
+    --cor-base:#5b5675;
+    --cor-destaque:#141125;
+    --cor-thema:#27ae60;
+    --cor-problema:#bd4f2d;
+    --cor-banner1:rgb(245, 255, 197);
+    --cor-banner2: rgb(237, 249, 255);
+    --cor-banner3: rgb(236, 249, 255);
+}
+@font-face {
+    font-family: "Pop";
+    src: url("Poppins-ExtraLight.ttf");
+    font-weight: 100;
+}
+@font-face {
+    font-family: "Pop";
+    src: url("Poppins-Light.ttf");
+    font-weight: 200;
+}
+@font-face {
+    font-family: "Pop";
+    src: url("Poppins-Medium.ttf");
+    font-weight: 300;
+}
+@font-face {
+    font-family: "Pop";
+    src: url("Poppins-Regular.ttf");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Pop";
+    src: url("Poppins-Bold.ttf");
+    font-weight: 500;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    font-family: "Pop";
+    font-weight: 200;
+}
+#qrcode{
+    width: 80%;
+    height: 80%;
+}
+#qrcode img{
+    width: 100%;
+    height: 100%;
+}
+h1{
+    font-weight: 500;
+}
+html, body {
+    height: 100%; /* Faz o html e o body ocuparem toda a altura da janela */
+    margin: 0; /* Remove a margem padrão */
+}
+body{
+    width: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: space-between;
+    padding: 10px;
+    flex-direction: column;
+    background: linear-gradient(rgb(181, 181, 230), rgb(196, 196, 243));
+}
+.container{
+    outline: 2px dashed rgba(255, 255, 255, 0.614);
+        display: flex;
+    width: 100%;
+    height: 70%;
+    padding: 20px;
+}
+.container .descri{
+    padding: 10px;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.container .result{
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+p{
+    font-weight: 300;
+    color: white;
+}
+input[type="text"]{
+    border-radius: 10px;
+    padding: 5px;
+    width: 100%;
+    background: transparent;
+    border:1px solid rgba(255, 255, 255, 0.804);
+    box-shadow:0px 0px 12px rgba(0, 0, 0, 0.14)
+}
+button{
+    cursor: pointer;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+}
+button:hover{
+    color: white;
+    outline: 1px solid white;
+    background: transparent;
+}
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-label {
+    margin-bottom: 5px;
+}
+
+/* Esconde a descrição padrão */
+#fileInput {
+    display: none; /* Oculta o input padrão */
+}
+
+.custom-file-upload {
+    outline: 2px dashed rgba(255, 255, 255, 0.614);
+    color: white;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+    background-color: transparent; /* Cor de fundo */
+}
+label{
+    font-weight: 300;
+}
+.caixas_rotatorias{
+	display: flex;
+	height: 100%;
+	width: 100%;
+	float:left;
+	position: relative;
+	/*margin:0 -4px -5px -2px;*/
+	transition: all .2s ease;
+}
+.loader6{
+	position: relative;
+	width: 19px;
+	height: 19px;
+
+	top: 46%;
+	top: -webkit-calc(50% - 6px);
+	top: calc(50% - 6px);
+	left: 46%;
+	left: -webkit-calc(50% - 6px);
+	left: calc(50% - 6px);
+	
+	border-radius: 12px;
+	background-color: #fff;
+	-webkit-transform-origin:  50% 50%;
+			transform-origin:  50% 50% ;
+	-webkit-animation: loader6 1s ease-in-out infinite;
+			animation: loader6 1s ease-in-out infinite;
+}
+
+.loader6:before{
+	content: "";
+	position: absolute;
+	background-color: rgba(255, 255, 255, .5);
+	top: 0px;
+	left: -25px;
+	height: 19px;
+	width: 19px;
+	border-radius: 12px;
+}
+
+.loader6:after{
+	content: "";
+	position: absolute;
+	background-color: rgba(255, 255 ,255 ,.5);
+	top: 0px;
+	left: 25px;
+	height: 19px;
+	width: 19px;
+	border-radius: 12px;
+}
+
+
+@-webkit-keyframes loader6{
+    0%{-webkit-transform:rotate(0deg);}
+    50%{-webkit-transform:rotate(180deg);}
+    100%{-webkit-transform:rotate(180deg);}
+}
+
+@keyframes loader6{
+    0%{transform:rotate(0deg);}
+    50%{transform:rotate(180deg);}
+    100%{transform:rotate(180deg);}
+}

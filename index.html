@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet"  type="text/css" href="style.css">
+    <title>GF360n QRCode</title>
+</head>
+<body>
+    <h1>Gere seu Qr Code Personalizado</h1>
+
+    <div class="container">
+        <div class="descri">
+            <p>Link Ou seu Texto</p>
+            <input type="text" id="inputText"  placeholder="Link ou texto"/>
+            <p>Escolha a cor</p>
+            <input id="cor" type="color"/>
+            <div class="file-upload">
+                <label class="file-label" for="fileInput">Escolha sua Logo:</label>
+                <label class="custom-file-upload" id="escolha-aqrquivo" for="fileInput">
+                    Nenhum arquivo
+                </label>
+                <input type="file" id="fileInput" accept=".png" />
+            </div>
+            <input id="fileInput" accept=".png" type="file"/>
+            <button id="generateBtn" onclick="transformarParaVermelho()">Gerar</button>
+        </div>
+        <div class="result">
+            <div id="caixas_rotatorias" class="caixas_rotatorias">
+                <div class="loader6"></div>
+            </div>
+            <div id="qrcode" ></div>
+        </div>    
+    </div>
+    <script>
+        var cor = document.getElementById('cor').value;
+        let arquivoSelecionado = null;
+        const QRCode = require('qrcode');
+        const Jimp = require('jimp');
+        function hexToRgb() {
+            // Remove o '#' se estiver presente
+            hex = cor.replace(/^#/, '');
+
+            // Converte os pares hexadecimais para decimal
+            const r = parseInt(hex.slice(0, 2), 16);
+            const g = parseInt(hex.slice(2, 4), 16);
+            const b = parseInt(hex.slice(4, 6), 16);
+
+            return [r, g, b];
+        }
+        async function gerar_qr() {
+            const inputText = document.getElementById('inputText').value;
+            const fundo = "#ffffff";
+            cor = document.getElementById('cor').value;
+            const options = {
+                errorCorrectionLevel: 'H', // Aumenta a correção de erro
+                version: 10,                // Versão do QR Code (pode ser 1-40, sendo 40 o maior)
+                color: {
+                    dark: cor,  // Cor do QR Code
+                    light: fundo // Cor de fundo
+                },
+                width: 300, // Largura total em pixels
+                margin: 10            };
+
+            try {
+                const url = await QRCode.toBuffer(inputText, options);
+                return await Jimp.read(url); // Lê a imagem do QR Code diretamente
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function transformarParaVermelho() {
+            try {
+                // Carrega a imagem
+                const qrCodeImg = await gerar_qr();
+                if(arquivoSelecionado == null){
+                    const dataUrl = await qrCodeImg.getBase64Async(Jimp.MIME_PNG);
+                    // Salva a nova imagem
+                    const img = document.createElement('img');
+                    img.src = dataUrl;
+                    img.alt = 'QR Code';
+                    const qrcodeDiv = document.getElementById('qrcode');
+                    qrcodeDiv.innerHTML = ''; // Limpa QR Code anterior
+                    qrcodeDiv.appendChild(img);
+                }
+                else{
+                    const imgCentro = await Jimp.read(arquivoSelecionado);
+                    // Itera sobre todos os pixels e altera para vermelho
+                    cor = document.getElementById('cor').value;
+                    var rgb =hexToRgb()
+                    imgCentro.scan(0, 0, imgCentro.bitmap.width, imgCentro.bitmap.height, (x, y, idx) => {
+                        imgCentro.bitmap.data[idx] = rgb[0];      // Red
+                        imgCentro.bitmap.data[idx + 1] = rgb[1];    // Green
+                        imgCentro.bitmap.data[idx + 2] = rgb[2];    // Blue
+                        // O valor do alpha (transparência) permanece o mesmo
+                    });
+                    console.log("leu a imagem")
+                    const fundoBranco = new Jimp(imgCentro.bitmap.width, imgCentro.bitmap.height, 0xffffffff); // 0xffffffff é a cor branca
+
+                    // Adiciona a imagem central sobre o fundo branco
+                    fundoBranco.composite(imgCentro, 0, 0)
+                    const tamanhoCentro = fundoBranco.bitmap.width / 7; // Tamanho da imagem central
+                    fundoBranco.resize(60, 60);
+
+                    // Calcula a posição para centralizar a imagem
+                    const posX = (qrCodeImg.bitmap.width - fundoBranco.bitmap.width) / 2;
+                    const posY = (qrCodeImg.bitmap.height - fundoBranco.bitmap.height) / 2;
+
+                    // Sobrepõe a imagem central no QR Code
+                    qrCodeImg.composite(fundoBranco, posX, posY);
+                    const dataUrl = await qrCodeImg.getBase64Async(Jimp.MIME_PNG);
+                    // Salva a nova imagem
+                    const img = document.createElement('img');
+                    img.src = dataUrl;
+                    img.alt = 'QR Code';
+                    const qrcodeDiv = document.getElementById('qrcode');
+                    qrcodeDiv.innerHTML = ''; // Limpa QR Code anterior
+                    qrcodeDiv.appendChild(img);
+
+                    console.log('Imagem processada e salva com sucesso!');
+                }
+            } catch (error) {
+                console.error('Erro ao processar a imagem:', error);
+            }
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', function() {
+            const arquivo = fileInput.files[0]; // Pega o primeiro arquivo selecionado
+            if (arquivo) {
+                const reader = new FileReader();
+                reader.onload = async function(event) {
+                    const buffer = event.target.result; // Obtém o buffer da imagem
+                    arquivoSelecionado = buffer; // Carrega a imagem usando Jimp
+                    const imgCentro = await Jimp.read(buffer);
+                    var escolha = document.getElementById("escolha-aqrquivo")
+                    escolha.textContent = arquivo.name
+                    // Usa Jimp para ler o buffer
+                    // Aqui você pode manipular a imagem usando imgCentro
+                };
+                reader.readAsArrayBuffer(arquivo); // Lê o arquivo como um ArrayBuffer
+            } else {
+                imgCentro = null; // Reseta a variável se nenhum arquivo for selecionado
+                fileInfoDisplay.textContent = 'Nenhuma imagem selecionada.';
+            }        
+        });
+
+    </script>
+</body>
+</html>

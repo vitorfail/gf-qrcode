@@ -1,0 +1,17 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.gfqrcode.id
+productName: GF 360 Qrcode
+files:
+  - filter:
+      - dist/**/*
+      - node_modules/**/*
+      - main.js
+mac:
+  target: dmg
+win:
+  target: nsis
+linux:
+  target: AppImage
+electronVersion: 32.1.2
