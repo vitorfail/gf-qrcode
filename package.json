@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "pack": "electron-packager . nome-do-app --platform=win32 --arch=x64"
+    "pack": "electron-packager . gfqrcode --platform=win32 --arch=x64"
   },
   "build": {
     "appId": "com.gfqrcode.id",
@@ -17,13 +17,16 @@
       "main.js"
     ],
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "assets/favicon.ico"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "assets/favicon.ico"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "assets/favicon.ico"
     }
   },
   "author": "Vitor Manoel",
@@ -36,7 +39,8 @@
   },
   "dependencies": {
     "fabric": "^6.4.2",
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.1",
+    "qrcode": "^1.5.4"
   },
   "webPreferences": {
     "nodeIntegration": true,
